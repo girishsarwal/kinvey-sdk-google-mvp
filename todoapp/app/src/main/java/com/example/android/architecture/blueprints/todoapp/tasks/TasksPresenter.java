@@ -108,9 +108,9 @@ public class TasksPresenter implements TasksContract.Presenter {
                             }
                             break;
                         case COMPLETED_TASKS:
-                            /*if (task.isCompleted()) {
+                            if (task.isCompleted()) {
                                 tasksToShow.add(task);
-                            }*/
+                            }
                             break;
                         default:
                             tasksToShow.add(task);
@@ -187,7 +187,7 @@ public class TasksPresenter implements TasksContract.Presenter {
     @Override
     public void openTaskDetails(@NonNull Task requestedTask) {
         checkNotNull(requestedTask, "requestedTask cannot be null!");
-        //mTasksView.showTaskDetailsUi(requestedTask.getId());
+        mTasksView.showTaskDetailsUi(requestedTask.getId());
     }
 
     @Override

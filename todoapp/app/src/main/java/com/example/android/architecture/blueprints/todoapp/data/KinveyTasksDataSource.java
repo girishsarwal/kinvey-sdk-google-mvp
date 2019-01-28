@@ -13,6 +13,7 @@ import com.kinvey.android.callback.KinveyReadCallback;
 import com.kinvey.android.model.User;
 import com.kinvey.android.store.DataStore;
 import com.kinvey.android.store.UserStore;
+import com.kinvey.java.KinveyException;
 import com.kinvey.java.auth.Credential;
 import com.kinvey.java.core.KinveyClientCallback;
 import com.kinvey.java.model.KinveyReadResponse;
@@ -118,13 +119,50 @@ public class KinveyTasksDataSource implements TasksDataSource {
     }
 
     @Override
-    public void getTask(@NonNull String taskId, @NonNull GetTaskCallback callback) {
+    public void getTask(@NonNull String taskId, @NonNull final GetTaskCallback callback) {
+        if(kinveyClient.getActiveUser() == null){
+            Log.e(TAG, "There is no active user!");
+            return;
+        }
+        dataStore.find(taskId, new KinveyClientCallback<Task>() {
+            @Override
+            public void onSuccess(Task task) {
+                if(task == null) {
+                    /** handle errors **/
+                }
+                callback.onTaskLoaded(task);
+            }
 
+            @Override
+            public void onFailure(Throwable throwable) {
+
+            }
+        });
     }
 
     @Override
-    public void saveTask(@NonNull Task task) {
-
+    public void saveTask(@NonNull final Task task) {
+        if(kinveyClient.getActiveUser() == null){
+            Log.e(TAG, "There is no active user!");
+            return;
+        }
+        try
+        {
+            dataStore.save(task, new KinveyClientCallback<Task>(){
+                @Override
+                public void onSuccess(Task result) {
+                    Log.d(TAG, "Task " + task.getId() + " was saved successfully");
+                }
+                @Override
+                public void onFailure(Throwable error) {
+                    Log.d(TAG, "There was a problem saving the task!");
+                }
+            });
+        }
+        catch (KinveyException ke)
+        {
+            // handle error
+        };
     }
 
     @Override

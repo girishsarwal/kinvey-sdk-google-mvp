@@ -7,8 +7,6 @@ import com.kinvey.java.model.KinveyMetaData;
 
 public class Task extends KinveyFile {
 
-    @Key("_id")
-    private String id;
     @Key
     private String subject;
     @Key
@@ -60,5 +58,11 @@ public class Task extends KinveyFile {
 
 
     public Task() {
+    }
+
+    public Task(String subject, String description) {
+        this.subject = subject;
+        this.description = description;
+        this.completed = "false";
     }
 }
