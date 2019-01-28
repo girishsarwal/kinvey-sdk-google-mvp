@@ -21,8 +21,7 @@ import android.support.annotation.NonNull;
 
 import com.example.android.architecture.blueprints.todoapp.addedittask.AddEditTaskActivity;
 import com.example.android.architecture.blueprints.todoapp.data.Task;
-import com.example.android.architecture.blueprints.todoapp.data.source.TasksDataSource;
-import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepository;
+import com.example.android.architecture.blueprints.todoapp.data.TasksDataSource;
 import com.example.android.architecture.blueprints.todoapp.util.EspressoIdlingResource;
 
 import java.util.ArrayList;
@@ -36,18 +35,16 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class TasksPresenter implements TasksContract.Presenter {
 
-    private final TasksRepository mTasksRepository;
-
     private final TasksContract.View mTasksView;
-
+    private final TasksDataSource mTasksDataSource;
     private TasksFilterType mCurrentFiltering = TasksFilterType.ALL_TASKS;
 
     private boolean mFirstLoad = true;
 
-    public TasksPresenter(@NonNull TasksRepository tasksRepository, @NonNull TasksContract.View tasksView) {
-        mTasksRepository = checkNotNull(tasksRepository, "tasksRepository cannot be null");
-        mTasksView = checkNotNull(tasksView, "tasksView cannot be null!");
+    public TasksPresenter(@NonNull TasksDataSource tasksDataSource, @NonNull TasksContract.View tasksView) {
 
+        mTasksDataSource = checkNotNull(tasksDataSource, "tasksDataSource cannot be null");
+        mTasksView = checkNotNull(tasksView, "tasksView cannot be null!");
         mTasksView.setPresenter(this);
     }
 
@@ -80,14 +77,14 @@ public class TasksPresenter implements TasksContract.Presenter {
             mTasksView.setLoadingIndicator(true);
         }
         if (forceUpdate) {
-            mTasksRepository.refreshTasks();
+            mTasksDataSource.refreshTasks();
         }
 
         // The network request might be handled in a different thread so make sure Espresso knows
         // that the app is busy until the response is handled.
         EspressoIdlingResource.increment(); // App is busy until further notice
 
-        mTasksRepository.getTasks(new TasksDataSource.LoadTasksCallback() {
+        mTasksDataSource.getTasks(new TasksDataSource.LoadTasksCallback() {
             @Override
             public void onTasksLoaded(List<Task> tasks) {
                 List<Task> tasksToShow = new ArrayList<Task>();
@@ -111,9 +108,9 @@ public class TasksPresenter implements TasksContract.Presenter {
                             }
                             break;
                         case COMPLETED_TASKS:
-                            if (task.isCompleted()) {
+                            /*if (task.isCompleted()) {
                                 tasksToShow.add(task);
-                            }
+                            }*/
                             break;
                         default:
                             tasksToShow.add(task);
@@ -190,13 +187,13 @@ public class TasksPresenter implements TasksContract.Presenter {
     @Override
     public void openTaskDetails(@NonNull Task requestedTask) {
         checkNotNull(requestedTask, "requestedTask cannot be null!");
-        mTasksView.showTaskDetailsUi(requestedTask.getId());
+        //mTasksView.showTaskDetailsUi(requestedTask.getId());
     }
 
     @Override
     public void completeTask(@NonNull Task completedTask) {
         checkNotNull(completedTask, "completedTask cannot be null!");
-        mTasksRepository.completeTask(completedTask);
+        mTasksDataSource.completeTask(completedTask);
         mTasksView.showTaskMarkedComplete();
         loadTasks(false, false);
     }
@@ -204,14 +201,14 @@ public class TasksPresenter implements TasksContract.Presenter {
     @Override
     public void activateTask(@NonNull Task activeTask) {
         checkNotNull(activeTask, "activeTask cannot be null!");
-        mTasksRepository.activateTask(activeTask);
+        mTasksDataSource.activateTask(activeTask);
         mTasksView.showTaskMarkedActive();
         loadTasks(false, false);
     }
 
     @Override
     public void clearCompletedTasks() {
-        mTasksRepository.clearCompletedTasks();
+        mTasksDataSource.clearCompletedTasks();
         mTasksView.showCompletedTasksCleared();
         loadTasks(false, false);
     }

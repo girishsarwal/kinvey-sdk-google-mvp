@@ -19,8 +19,7 @@ package com.example.android.architecture.blueprints.todoapp.statistics;
 import android.support.annotation.NonNull;
 
 import com.example.android.architecture.blueprints.todoapp.data.Task;
-import com.example.android.architecture.blueprints.todoapp.data.source.TasksDataSource;
-import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepository;
+import com.example.android.architecture.blueprints.todoapp.data.TasksDataSource;
 import com.example.android.architecture.blueprints.todoapp.util.EspressoIdlingResource;
 
 import java.util.List;
@@ -33,13 +32,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class StatisticsPresenter implements StatisticsContract.Presenter {
 
-    private final TasksRepository mTasksRepository;
+    private final TasksDataSource mTasksRepository;
 
     private final StatisticsContract.View mStatisticsView;
 
-    public StatisticsPresenter(@NonNull TasksRepository tasksRepository,
+    public StatisticsPresenter(@NonNull TasksDataSource tasksDataSource,
                                @NonNull StatisticsContract.View statisticsView) {
-        mTasksRepository = checkNotNull(tasksRepository, "tasksRepository cannot be null");
+        mTasksRepository = checkNotNull(tasksDataSource, "tasksDataSource cannot be null");
         mStatisticsView = checkNotNull(statisticsView, "StatisticsView cannot be null!");
 
         mStatisticsView.setPresenter(this);

@@ -20,7 +20,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.example.android.architecture.blueprints.todoapp.data.Task;
-import com.example.android.architecture.blueprints.todoapp.data.source.TasksDataSource;
+import com.example.android.architecture.blueprints.todoapp.data.TasksDataSource;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -50,10 +50,10 @@ public class AddEditTaskPresenter implements AddEditTaskContract.Presenter,
      * @param addTaskView the add/edit view
      * @param shouldLoadDataFromRepo whether data needs to be loaded or not (for config changes)
      */
-    public AddEditTaskPresenter(@Nullable String taskId, @NonNull TasksDataSource tasksRepository,
+    public AddEditTaskPresenter(@Nullable String taskId, @NonNull TasksDataSource tasksDataSource,
             @NonNull AddEditTaskContract.View addTaskView, boolean shouldLoadDataFromRepo) {
         mTaskId = taskId;
-        mTasksRepository = checkNotNull(tasksRepository);
+        mTasksRepository = checkNotNull(tasksDataSource);
         mAddTaskView = checkNotNull(addTaskView);
         mIsDataMissing = shouldLoadDataFromRepo;
 
@@ -111,21 +111,21 @@ public class AddEditTaskPresenter implements AddEditTaskContract.Presenter,
         return mTaskId == null;
     }
 
-    private void createTask(String title, String description) {
-        Task newTask = new Task(title, description);
-        if (newTask.isEmpty()) {
-            mAddTaskView.showEmptyTaskError();
-        } else {
-            mTasksRepository.saveTask(newTask);
-            mAddTaskView.showTasksList();
-        }
+    private void createTask(String subject, String description) {
+//        Task newTask = new Task(subject, description);
+//        if (newTask.isEmpty()) {
+//            mAddTaskView.showEmptyTaskError();
+//        } else {
+//            mTasksRepository.saveTask(newTask);
+//            mAddTaskView.showTasksList();
+//        }
     }
 
-    private void updateTask(String title, String description) {
-        if (isNewTask()) {
-            throw new RuntimeException("updateTask() was called but task is new.");
-        }
-        mTasksRepository.saveTask(new Task(title, description, mTaskId));
-        mAddTaskView.showTasksList(); // After an edit, go back to the list.
+    private void updateTask(String subject, String description) {
+//        if (isNewTask()) {
+//            throw new RuntimeException("updateTask() was called but task is new.");
+//        }
+//        mTasksRepository.saveTask(new Task(subject, description, mTaskId));
+//        mAddTaskView.showTasksList(); // After an edit, go back to the list.
     }
 }

@@ -24,8 +24,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import com.example.android.architecture.blueprints.todoapp.Injection;
 import com.example.android.architecture.blueprints.todoapp.R;
+import com.example.android.architecture.blueprints.todoapp.data.KinveyTasksDataSource;
 import com.example.android.architecture.blueprints.todoapp.util.ActivityUtils;
 import com.example.android.architecture.blueprints.todoapp.util.EspressoIdlingResource;
 
@@ -85,7 +85,7 @@ public class AddEditTaskActivity extends AppCompatActivity {
         // Create the presenter
         mAddEditTaskPresenter = new AddEditTaskPresenter(
                 taskId,
-                Injection.provideTasksRepository(getApplicationContext()),
+                KinveyTasksDataSource.getInstance(getApplicationContext()),
                 addEditTaskFragment,
                 shouldLoadDataFromRepo);
     }

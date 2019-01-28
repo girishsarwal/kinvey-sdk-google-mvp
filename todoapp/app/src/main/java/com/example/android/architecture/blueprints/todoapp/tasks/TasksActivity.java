@@ -28,8 +28,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.example.android.architecture.blueprints.todoapp.Injection;
 import com.example.android.architecture.blueprints.todoapp.R;
+import com.example.android.architecture.blueprints.todoapp.data.KinveyTasksDataSource;
+import com.example.android.architecture.blueprints.todoapp.data.TasksDataSource;
 import com.example.android.architecture.blueprints.todoapp.statistics.StatisticsActivity;
 import com.example.android.architecture.blueprints.todoapp.util.ActivityUtils;
 import com.example.android.architecture.blueprints.todoapp.util.EspressoIdlingResource;
@@ -41,6 +42,7 @@ public class TasksActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
 
     private TasksPresenter mTasksPresenter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +75,7 @@ public class TasksActivity extends AppCompatActivity {
 
         // Create the presenter
         mTasksPresenter = new TasksPresenter(
-                Injection.provideTasksRepository(getApplicationContext()), tasksFragment);
+                KinveyTasksDataSource.getInstance(getApplicationContext()), tasksFragment);
 
         // Load previously saved state, if available.
         if (savedInstanceState != null) {

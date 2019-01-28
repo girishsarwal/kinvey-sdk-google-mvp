@@ -20,8 +20,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.example.android.architecture.blueprints.todoapp.data.Task;
-import com.example.android.architecture.blueprints.todoapp.data.source.TasksDataSource;
-import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepository;
+import com.example.android.architecture.blueprints.todoapp.data.TasksDataSource;
 import com.google.common.base.Strings;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -32,7 +31,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class TaskDetailPresenter implements TaskDetailContract.Presenter {
 
-    private final TasksRepository mTasksRepository;
+    private final TasksDataSource mTasksDataSource;
 
     private final TaskDetailContract.View mTaskDetailView;
 
@@ -40,10 +39,11 @@ public class TaskDetailPresenter implements TaskDetailContract.Presenter {
     private String mTaskId;
 
     public TaskDetailPresenter(@Nullable String taskId,
-                               @NonNull TasksRepository tasksRepository,
+                               @NonNull TasksDataSource tasksDataSource,
                                @NonNull TaskDetailContract.View taskDetailView) {
         mTaskId = taskId;
-        mTasksRepository = checkNotNull(tasksRepository, "tasksRepository cannot be null!");
+
+        mTasksDataSource = checkNotNull(tasksDataSource, "tasksDataSource cannot be null!");
         mTaskDetailView = checkNotNull(taskDetailView, "taskDetailView cannot be null!");
 
         mTaskDetailView.setPresenter(this);
@@ -61,7 +61,7 @@ public class TaskDetailPresenter implements TaskDetailContract.Presenter {
         }
 
         mTaskDetailView.setLoadingIndicator(true);
-        mTasksRepository.getTask(mTaskId, new TasksDataSource.GetTaskCallback() {
+        mTasksDataSource.getTask(mTaskId, new TasksDataSource.GetTaskCallback() {
             @Override
             public void onTaskLoaded(Task task) {
                 // The view may not be able to handle UI updates anymore
@@ -102,7 +102,7 @@ public class TaskDetailPresenter implements TaskDetailContract.Presenter {
             mTaskDetailView.showMissingTask();
             return;
         }
-        mTasksRepository.deleteTask(mTaskId);
+        mTasksDataSource.deleteTask(mTaskId);
         mTaskDetailView.showTaskDeleted();
     }
 
@@ -112,7 +112,7 @@ public class TaskDetailPresenter implements TaskDetailContract.Presenter {
             mTaskDetailView.showMissingTask();
             return;
         }
-        mTasksRepository.completeTask(mTaskId);
+        mTasksDataSource.completeTask(mTaskId);
         mTaskDetailView.showTaskMarkedComplete();
     }
 
@@ -122,7 +122,7 @@ public class TaskDetailPresenter implements TaskDetailContract.Presenter {
             mTaskDetailView.showMissingTask();
             return;
         }
-        mTasksRepository.activateTask(mTaskId);
+        mTasksDataSource.activateTask(mTaskId);
         mTaskDetailView.showTaskMarkedActive();
     }
 
