@@ -65,4 +65,9 @@ public class Task extends KinveyFile {
         this.description = description;
         this.completed = "false";
     }
+
+    public Task(String id, String subject, String description) {
+        this(subject, description);
+        this.setId(id);
+    }
 }
