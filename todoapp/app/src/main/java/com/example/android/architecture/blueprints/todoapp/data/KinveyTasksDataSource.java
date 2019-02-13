@@ -4,6 +4,7 @@ import android.content.Context;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.kinvey.android.Client;
 import com.kinvey.android.callback.KinveyClientBuilderCallback;
@@ -14,7 +15,9 @@ import com.kinvey.android.model.User;
 import com.kinvey.android.store.DataStore;
 import com.kinvey.android.store.UserStore;
 import com.kinvey.java.KinveyException;
+import com.kinvey.java.Query;
 import com.kinvey.java.auth.Credential;
+import com.kinvey.java.cache.KinveyCachedClientCallback;
 import com.kinvey.java.core.KinveyClientCallback;
 import com.kinvey.java.model.KinveyReadResponse;
 import com.kinvey.java.store.StoreType;
@@ -38,11 +41,12 @@ public class KinveyTasksDataSource implements TasksDataSource {
 
 
     public static KinveyTasksDataSource getInstance(Context context){
+
         if(INSTANCE == null){
             INSTANCE = new KinveyTasksDataSource(context);
         }
         INSTANCE.ping();
-        INSTANCE.dataStore = DataStore.collection(COLLECTION, Task.class, StoreType.NETWORK, INSTANCE.kinveyClient);
+        INSTANCE.dataStore = DataStore.collection(COLLECTION, Task.class, StoreType.CACHE, INSTANCE.kinveyClient);
         INSTANCE.LoginUser();
         return INSTANCE;
     }
@@ -102,10 +106,11 @@ public class KinveyTasksDataSource implements TasksDataSource {
             Log.e(TAG, "There is no active user!");
             return;
         }
+        Query query = kinveyClient.query().in("_id", new String[]{"5c4ac891c341455f55e51675" });
         dataStore.find(new KinveyReadCallback<Task>() {
             @Override
             public void onSuccess(KinveyReadResponse<Task> kinveyReadResponse) {
-                if(kinveyReadResponse.getListOfExceptions().size() > 0){
+                if (kinveyReadResponse.getListOfExceptions().size() > 0) {
                     /** handle errors **/
                 }
                 callback.onTasksLoaded(kinveyReadResponse.getResult());
@@ -113,6 +118,15 @@ public class KinveyTasksDataSource implements TasksDataSource {
 
             @Override
             public void onFailure(Throwable throwable) {
+
+            }
+        }, new KinveyCachedClientCallback<KinveyReadResponse<Task>>(){
+            @Override
+            public void onSuccess(KinveyReadResponse<Task> tasks) {
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
 
             }
         });

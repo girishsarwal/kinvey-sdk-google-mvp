@@ -129,3 +129,39 @@ public class AddEditTaskPresenter implements AddEditTaskContract.Presenter,
         mAddTaskView.showTasksList(); // After an edit, go back to the list.
     }
 }
+
+
+/**
+
+
+ MVP - Model View Presenter
+
+ MVP - Variant of the MVC - Model View Controller
+
+
+ C -> M
+ V <= subsribe from Model
+
+
+ Presenter ->Boss
+
+Model -> Abstraction of the Data Store
+
+View View -> Fragment
+
+ Android -> Activites & Intents
+
+
+ email Activity
+ Camera Activity
+ Whatsapp Activity
+ Todo Actovity
+
+
+ Specifies an intemte -> Activioty
+
+ Activity -> View -> Frahmemn
+
+
+ Presenter -> Marshaller of data between the view and the model
+ **/
