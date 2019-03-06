@@ -106,28 +106,27 @@ public class KinveyTasksDataSource implements TasksDataSource {
             Log.e(TAG, "There is no active user!");
             return;
         }
-        Query query = kinveyClient.query().in("_id", new String[]{"5c4ac891c341455f55e51675" });
-        dataStore.find(new KinveyReadCallback<Task>() {
-            @Override
-            public void onSuccess(KinveyReadResponse<Task> kinveyReadResponse) {
-                if (kinveyReadResponse.getListOfExceptions().size() > 0) {
-                    /** handle errors **/
-                }
-                callback.onTasksLoaded(kinveyReadResponse.getResult());
-            }
 
+        dataStore.find(new KinveyReadCallback<Task>(){
             @Override
-            public void onFailure(Throwable throwable) {
-
-            }
-        }, new KinveyCachedClientCallback<KinveyReadResponse<Task>>(){
-            @Override
-            public void onSuccess(KinveyReadResponse<Task> tasks) {
+            public void onSuccess(KinveyReadResponse<Task> data) {
+                System.out.println("Active Network Response Success: " + data.getResult());
+                callback.onTasksLoaded(data.getResult());
             }
 
             @Override
             public void onFailure(Throwable error) {
+                System.out.println("Active Network Response Failure: " + error.getMessage());
+            }
+        }, new KinveyCachedClientCallback<KinveyReadResponse<Task>>(){
+            @Override
+            public void onSuccess(KinveyReadResponse<Task> data) {
+                System.out.println("Cache Response Success: " + data.getResult());
+            }
 
+            @Override
+            public void onFailure(Throwable error) {
+                System.out.println("Cache Response Failure: " + error.getMessage());
             }
         });
     }
