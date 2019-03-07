@@ -46,7 +46,7 @@ public class KinveyTasksDataSource implements TasksDataSource {
             INSTANCE = new KinveyTasksDataSource(context);
         }
         INSTANCE.ping();
-        INSTANCE.dataStore = DataStore.collection(COLLECTION, Task.class, StoreType.CACHE, INSTANCE.kinveyClient);
+        INSTANCE.dataStore = DataStore.collection(COLLECTION, Task.class, StoreType.AUTO, INSTANCE.kinveyClient);
         INSTANCE.LoginUser();
         return INSTANCE;
     }
@@ -107,26 +107,16 @@ public class KinveyTasksDataSource implements TasksDataSource {
             return;
         }
 
-        dataStore.find(new KinveyReadCallback<Task>(){
+        dataStore.find("5c4ac891c341455f55e51675", new KinveyClientCallback<Task>(){
+
             @Override
-            public void onSuccess(KinveyReadResponse<Task> data) {
-                System.out.println("Active Network Response Success: " + data.getResult());
-                callback.onTasksLoaded(data.getResult());
+            public void onSuccess(Task task) {
+                Log.i("info: ", task.toString());
             }
 
             @Override
-            public void onFailure(Throwable error) {
-                System.out.println("Active Network Response Failure: " + error.getMessage());
-            }
-        }, new KinveyCachedClientCallback<KinveyReadResponse<Task>>(){
-            @Override
-            public void onSuccess(KinveyReadResponse<Task> data) {
-                System.out.println("Cache Response Success: " + data.getResult());
-            }
-
-            @Override
-            public void onFailure(Throwable error) {
-                System.out.println("Cache Response Failure: " + error.getMessage());
+            public void onFailure(Throwable throwable) {
+                Log.e("error: ", throwable.getMessage());
             }
         });
     }
